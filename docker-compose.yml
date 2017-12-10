@@ -3,7 +3,7 @@ services:
   ##########################################
   listener:
     image: python:latest
-    #COPY listener.py /
+    #COPY listener.py /  # no such command in compose file
     volumes:
       - ./listener.py:/listener.py
     command: ["/usr/bin/python","/listener.py"]
@@ -37,7 +37,8 @@ services:
       - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
       # Password: admin
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
+      # - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
+      - GRAYLOG_WEB_ENDPOINT_URI=http://192.168.1.8:9000/api
       - GRAYLOG_TRANSPORT_EMAIL_ENABLED=true
       - GRAYLOG_TRANSPORT_EMAIL_HOSTNAME=smtp
       - GRAYLOG_TRANSPORT_EMAIL_PORT=25
@@ -62,8 +63,13 @@ services:
       - 12201:12201/udp
 
   ##########################################
-  #lstash:
-  #  image: my-logstash551
-  #  command: /bin/bash -c "sleep infinity"
-  #  links:
-  #    - graylog 
+  lstash:
+    image: truthadjustr/myopenjdk
+    #command: /bin/bash -c "sleep infinity"
+    command: /root/logstash/bin/logstash
+    environment:
+      - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
+    links:
+      - graylog 
+    ports:
+      - 14344:514/udp
