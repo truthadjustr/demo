@@ -66,6 +66,8 @@ services:
   lstash:
     image: truthadjustr/myopenjdk
     #command: /bin/bash -c "sleep infinity"
+    volumes:
+      - ./pipeline/:/root/logstash/pipeline/
     command: /root/logstash/bin/logstash
     environment:
       - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
